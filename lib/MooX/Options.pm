@@ -12,7 +12,7 @@ package MooX::Options;
 
 use strict;
 use warnings;
-our $VERSION = '4.014';    # VERSION
+our $VERSION = '4.015';    # VERSION
 use Carp;
 
 my @OPTIONS_ATTRIBUTES
@@ -200,7 +200,7 @@ MooX::Options - Explicit Options eXtension for Object Class
 
 =head1 VERSION
 
-version 4.014
+version 4.015
 
 =head1 DESCRIPTION
 

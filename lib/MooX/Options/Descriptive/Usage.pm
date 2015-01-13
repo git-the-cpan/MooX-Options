@@ -12,7 +12,7 @@ package MooX::Options::Descriptive::Usage;
 
 use strict;
 use warnings;
-our $VERSION = '4.014';    # VERSION
+our $VERSION = '4.015';    # VERSION
 use feature 'say', 'state';
 use Text::LineFold;
 use Getopt::Long::Descriptive;
@@ -20,7 +20,7 @@ use Scalar::Util qw/blessed/;
 
 BEGIN {
     ## no critic (ProhibitStringyEval)
-    if ( !eval "use Term::Size::Any qw/chars/" ) {
+    if ( !eval "use Term::Size::Any qw/chars/; 1" ) {
         no strict 'refs';
         *{"MooX::Options::Descriptive::Usage::chars"}
             = sub { return ( 80, 25 ) };
@@ -246,7 +246,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.014
+version 4.015
 
 =head1 DESCRIPTION
 
