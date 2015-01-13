@@ -12,12 +12,20 @@ package MooX::Options::Descriptive::Usage;
 
 use strict;
 use warnings;
-our $VERSION = '4.013';    # VERSION
+our $VERSION = '4.014';    # VERSION
 use feature 'say', 'state';
 use Text::LineFold;
-use Term::Size::Any qw/chars/;
 use Getopt::Long::Descriptive;
 use Scalar::Util qw/blessed/;
+
+BEGIN {
+    ## no critic (ProhibitStringyEval)
+    if ( !eval "use Term::Size::Any qw/chars/" ) {
+        no strict 'refs';
+        *{"MooX::Options::Descriptive::Usage::chars"}
+            = sub { return ( 80, 25 ) };
+    }
+}
 
 my %format_doc = (
     's'  => 'String',
@@ -238,7 +246,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.013
+version 4.014
 
 =head1 DESCRIPTION
 
@@ -247,6 +255,10 @@ Usage class to display the error message.
 This class use the full size of your terminal
 
 =head1 METHODS
+
+=head2 chars
+
+Return (Columns, Rows) of the current terminal
 
 =head2 new
 

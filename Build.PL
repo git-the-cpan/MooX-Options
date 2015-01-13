@@ -27,10 +27,12 @@ my %module_build_args = (
     "celogeek <me\@celogeek.com>"
   ],
   "dist_name" => "MooX-Options",
-  "dist_version" => "4.013",
+  "dist_version" => "4.014",
   "license" => "perl",
   "module_name" => "MooX::Options",
-  "recommends" => {},
+  "recommends" => {
+    "Term::Size::Any" => 0
+  },
   "recursive_test_files" => 1,
   "requires" => {
     "Carp" => 0,
@@ -46,7 +48,6 @@ my %module_build_args = (
     "Pod::Usage" => 0,
     "Regexp::Common" => 0,
     "Scalar::Util" => 0,
-    "Term::Size::Any" => 0,
     "Text::LineFold" => 0,
     "feature" => 0,
     "overload" => 0,

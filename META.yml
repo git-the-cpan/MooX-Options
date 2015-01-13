@@ -29,6 +29,8 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
 name: MooX-Options
+recommends:
+  Term::Size::Any: '0'
 requires:
   Carp: '0'
   Data::Record: '0'
@@ -43,7 +45,6 @@ requires:
   Pod::Usage: '0'
   Regexp::Common: '0'
   Scalar::Util: '0'
-  Term::Size::Any: '0'
   Text::LineFold: '0'
   feature: '0'
   overload: '0'
@@ -55,7 +56,7 @@ resources:
   bugtracker: https://github.com/celogeek/MooX-Options/issues
   homepage: https://tasks.celogeek.com/projects/perl-modules-moox-options
   repository: https://github.com/celogeek/MooX-Options.git
-version: '4.013'
+version: '4.014'
 x_Dist_Zilla:
   perl:
     version: '5.020001'
@@ -280,6 +281,14 @@ x_Dist_Zilla:
           phase: runtime
           type: requires
       name: Prereqs
+      version: '5.024'
+    -
+      class: Dist::Zilla::Plugin::Prereqs
+      config:
+        Dist::Zilla::Plugin::Prereqs:
+          phase: runtime
+          type: recommends
+      name: RuntimeRecommends
       version: '5.024'
     -
       class: Dist::Zilla::Plugin::MetaResourcesFromGit

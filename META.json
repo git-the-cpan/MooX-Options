@@ -32,6 +32,9 @@
          }
       },
       "runtime" : {
+         "recommends" : {
+            "Term::Size::Any" : "0"
+         },
          "requires" : {
             "Carp" : "0",
             "Data::Record" : "0",
@@ -46,7 +49,6 @@
             "Pod::Usage" : "0",
             "Regexp::Common" : "0",
             "Scalar::Util" : "0",
-            "Term::Size::Any" : "0",
             "Text::LineFold" : "0",
             "feature" : "0",
             "overload" : "0",
@@ -88,7 +90,7 @@
          "web" : "https://github.com/celogeek/MooX-Options"
       }
    },
-   "version" : "4.013",
+   "version" : "4.014",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.020001"
@@ -374,6 +376,17 @@
                }
             },
             "name" : "Prereqs",
+            "version" : "5.024"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Prereqs",
+            "config" : {
+               "Dist::Zilla::Plugin::Prereqs" : {
+                  "phase" : "runtime",
+                  "type" : "recommends"
+               }
+            },
+            "name" : "RuntimeRecommends",
             "version" : "5.024"
          },
          {

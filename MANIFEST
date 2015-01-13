@@ -22,6 +22,7 @@ t/00-compile.t
 t/000-report-versions.t
 t/around_options_usage.t
 t/author-critic.t
+t/autosplit_warning_on_required_param.t
 t/base.st
 t/check_target_methods.t
 t/doc-utf8.t
