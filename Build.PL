@@ -27,7 +27,7 @@ my %module_build_args = (
     "celogeek <me\@celogeek.com>"
   ],
   "dist_name" => "MooX-Options",
-  "dist_version" => "4.015",
+  "dist_version" => "4.016",
   "license" => "perl",
   "module_name" => "MooX::Options",
   "recommends" => {
@@ -38,7 +38,7 @@ my %module_build_args = (
     "Carp" => 0,
     "Data::Record" => 0,
     "Getopt::Long" => "2.38",
-    "Getopt::Long::Descriptive" => "0.091",
+    "Getopt::Long::Descriptive" => "0.099",
     "JSON" => 0,
     "MRO::Compat" => 0,
     "Module::Metadata" => "1.000019",

@@ -29,6 +29,8 @@ t/doc-utf8.t
 t/doc.t
 t/failure.t
 t/flavour.t
+t/hidden.t
+t/isa_check.t
 t/lib/MooXCmdTest.pm
 t/lib/MooXCmdTest/Cmd/test1.pm
 t/lib/MooXCmdTest/Cmd/test1/Cmd/test2.pm

@@ -20,22 +20,21 @@ use Test::Trap;
     use Moo;
     use MooX::Options;
 
-    option 'treq' => (
-        is            => 'ro',
-        documentation => 'this is mandatory',
-        format        => 's@',
-        required      => 1,
-        autosplit     => ",",
+    option 'hero' => (
+        is     => 'ro',
+        doc    => 'this is mandatory',
+        format => 's@',
+        isa    => sub { die "boop\n" },
     );
 
     1;
 }
 
 {
-    local @ARGV = ('--treq');
+    local @ARGV = (qw/--hero batman/);
     trap { my $opt = t->new_with_options(); };
-    like $trap->stderr,   qr/treq is missing/,      'stdout ok';
-    unlike $trap->stderr, qr/Use of uninitialized/, 'stderr ok';
+    like $trap->stderr, qr/^boop/, 'stdout ok';
+    like $trap->stderr, qr/USAGE/, 'stderr ok';
 }
 
 done_testing;
