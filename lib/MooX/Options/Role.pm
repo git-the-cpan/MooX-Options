@@ -12,7 +12,7 @@ package MooX::Options::Role;
 use strict;
 use warnings;
 
-our $VERSION = '4.016';    # VERSION
+our $VERSION = '4.017';    # VERSION
 
 use MRO::Compat;
 use MooX::Options::Descriptive;
@@ -258,7 +258,7 @@ sub new_with_options {
     elsif ( $@ =~ /^(.*?)\srequired/x ) {
         print STDERR "$1 is missing\n";
     }
-    elsif ( $@ =~ /^isa check.*?failed: / ) {
+    elsif ( $@ =~ /^isa\scheck.*?failed:\s/x ) {
         print STDERR substr( $@, index( $@, ':' ) + 2 );
     }
     else {
@@ -442,7 +442,7 @@ MooX::Options::Role - role that is apply to your object
 
 =head1 VERSION
 
-version 4.016
+version 4.017
 
 =head1 METHODS
 

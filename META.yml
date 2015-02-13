@@ -9,7 +9,7 @@ build_requires:
   FindBin: '0'
   IO::Handle: '0'
   IPC::Open3: '0'
-  Module::Build: '0.28'
+  Module::Build: '0.4211'
   Moo: '1.003001'
   Role::Tiny::With: '0'
   Test::More: '0.94'
@@ -20,7 +20,7 @@ build_requires:
   namespace::clean: '0'
   perl: '5.010'
 configure_requires:
-  Module::Build: '0.28'
+  Module::Build: '0.4211'
   perl: v5.10.0
 dynamic_config: 0
 generated_by: 'Dist::Zilla version 5.024, CPAN::Meta::Converter version 2.142690'
@@ -34,7 +34,7 @@ recommends:
 requires:
   Carp: '0'
   Data::Record: '0'
-  Getopt::Long: '2.38'
+  Getopt::Long: '2.43'
   Getopt::Long::Descriptive: '0.099'
   JSON: '0'
   MRO::Compat: '0'
@@ -56,7 +56,7 @@ resources:
   bugtracker: https://github.com/celogeek/MooX-Options/issues
   homepage: https://tasks.celogeek.com/projects/perl-modules-moox-options
   repository: https://github.com/celogeek/MooX-Options.git
-version: '4.016'
+version: '4.017'
 x_Dist_Zilla:
   perl:
     version: '5.020001'
@@ -117,13 +117,6 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::ConfirmRelease
       name: '@GRS/@Filter/ConfirmRelease'
-      version: '5.024'
-    -
-      class: Dist::Zilla::Plugin::ModuleBuild
-      config:
-        Dist::Zilla::Role::TestRunner:
-          default_jobs: 1
-      name: '@GRS/ModuleBuild'
       version: '5.024'
     -
       class: Dist::Zilla::Plugin::ReportVersions
@@ -270,6 +263,13 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Test::Kwalitee::Extra
       name: '@GRS/Test::Kwalitee::Extra'
       version: v0.2.1
+    -
+      class: Dist::Zilla::Plugin::ModuleBuild
+      config:
+        Dist::Zilla::Role::TestRunner:
+          default_jobs: 1
+      name: ModuleBuild
+      version: '5.024'
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: AutoPrereqs

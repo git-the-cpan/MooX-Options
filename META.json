@@ -16,12 +16,12 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Module::Build" : "0.28"
+            "Module::Build" : "0.4211"
          }
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.28",
+            "Module::Build" : "0.4211",
             "perl" : "v5.10.0"
          }
       },
@@ -38,7 +38,7 @@
          "requires" : {
             "Carp" : "0",
             "Data::Record" : "0",
-            "Getopt::Long" : "2.38",
+            "Getopt::Long" : "2.43",
             "Getopt::Long::Descriptive" : "0.099",
             "JSON" : "0",
             "MRO::Compat" : "0",
@@ -90,7 +90,7 @@
          "web" : "https://github.com/celogeek/MooX-Options"
       }
    },
-   "version" : "4.016",
+   "version" : "4.017",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.020001"
@@ -165,16 +165,6 @@
          {
             "class" : "Dist::Zilla::Plugin::ConfirmRelease",
             "name" : "@GRS/@Filter/ConfirmRelease",
-            "version" : "5.024"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::ModuleBuild",
-            "config" : {
-               "Dist::Zilla::Role::TestRunner" : {
-                  "default_jobs" : 1
-               }
-            },
-            "name" : "@GRS/ModuleBuild",
             "version" : "5.024"
          },
          {
@@ -361,6 +351,16 @@
             "class" : "Dist::Zilla::Plugin::Test::Kwalitee::Extra",
             "name" : "@GRS/Test::Kwalitee::Extra",
             "version" : "v0.2.1"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::ModuleBuild",
+            "config" : {
+               "Dist::Zilla::Role::TestRunner" : {
+                  "default_jobs" : 1
+               }
+            },
+            "name" : "ModuleBuild",
+            "version" : "5.024"
          },
          {
             "class" : "Dist::Zilla::Plugin::AutoPrereqs",

@@ -11,15 +11,15 @@
 use strict;
 use warnings;
 
-use Module::Build 0.28;
+use Module::Build 0.4211;
 
 
 my %module_build_args = (
   "build_requires" => {
-    "Module::Build" => "0.28"
+    "Module::Build" => "0.4211"
   },
   "configure_requires" => {
-    "Module::Build" => "0.28",
+    "Module::Build" => "0.4211",
     "perl" => "v5.10.0"
   },
   "dist_abstract" => "Explicit Options eXtension for Object Class",
@@ -27,7 +27,7 @@ my %module_build_args = (
     "celogeek <me\@celogeek.com>"
   ],
   "dist_name" => "MooX-Options",
-  "dist_version" => "4.016",
+  "dist_version" => "4.017",
   "license" => "perl",
   "module_name" => "MooX::Options",
   "recommends" => {
@@ -37,7 +37,7 @@ my %module_build_args = (
   "requires" => {
     "Carp" => 0,
     "Data::Record" => 0,
-    "Getopt::Long" => "2.38",
+    "Getopt::Long" => "2.43",
     "Getopt::Long::Descriptive" => "0.099",
     "JSON" => 0,
     "MRO::Compat" => 0,
@@ -84,7 +84,7 @@ my %fallback_build_requires = (
   "FindBin" => 0,
   "IO::Handle" => 0,
   "IPC::Open3" => 0,
-  "Module::Build" => "0.28",
+  "Module::Build" => "0.4211",
   "Moo" => "1.003001",
   "Role::Tiny::With" => 0,
   "Test::More" => "0.94",
