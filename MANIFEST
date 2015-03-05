@@ -51,6 +51,7 @@ t/release-pod-coverage.t
 t/release-unused-vars.t
 t/role.t
 t/string_with_zero_value.t
+t/usage_string.t
 t/with_config.t
 xt/perlcritic.rc
 xt/perltidy.rc

@@ -12,7 +12,7 @@ package MooX::Options::Role;
 use strict;
 use warnings;
 
-our $VERSION = '4.017';    # VERSION
+our $VERSION = '4.018';    # VERSION
 
 use MRO::Compat;
 use MooX::Options::Descriptive;
@@ -291,7 +291,7 @@ sub parse_options {
     my $prog_name = $class->_options_prog_name();
 
     # create usage str
-    my $usage_str = "USAGE: $prog_name %o";
+    my $usage_str = $options_config{usage_string} // "USAGE: $prog_name %o";
 
     my ( $opt, $usage ) = describe_options(
         ($usage_str),
@@ -442,7 +442,7 @@ MooX::Options::Role - role that is apply to your object
 
 =head1 VERSION
 
-version 4.017
+version 4.018
 
 =head1 METHODS
 

@@ -21,7 +21,7 @@ build_requires:
   perl: '5.010'
 configure_requires:
   Module::Build: '0.4211'
-  perl: v5.10.0
+  perl: '5.010'
 dynamic_config: 0
 generated_by: 'Dist::Zilla version 5.024, CPAN::Meta::Converter version 2.142690'
 license: perl
@@ -56,7 +56,7 @@ resources:
   bugtracker: https://github.com/celogeek/MooX-Options/issues
   homepage: https://tasks.celogeek.com/projects/perl-modules-moox-options
   repository: https://github.com/celogeek/MooX-Options.git
-version: '4.017'
+version: '4.018'
 x_Dist_Zilla:
   perl:
     version: '5.020001'

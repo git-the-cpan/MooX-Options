@@ -20,14 +20,14 @@ my %module_build_args = (
   },
   "configure_requires" => {
     "Module::Build" => "0.4211",
-    "perl" => "v5.10.0"
+    "perl" => "5.010"
   },
   "dist_abstract" => "Explicit Options eXtension for Object Class",
   "dist_author" => [
     "celogeek <me\@celogeek.com>"
   ],
   "dist_name" => "MooX-Options",
-  "dist_version" => "4.017",
+  "dist_version" => "4.018",
   "license" => "perl",
   "module_name" => "MooX::Options",
   "recommends" => {
