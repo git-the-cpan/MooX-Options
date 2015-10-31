@@ -12,11 +12,13 @@ package MooX::Options;
 
 use strict;
 use warnings;
-our $VERSION = '4.018';    # VERSION
-use Carp;
+
+our $VERSION = '4.019';    # VERSION
+
+use Locale::TextDomain 'MooX-Options';
 
 my @OPTIONS_ATTRIBUTES
-    = qw/format short repeatable negativable autosplit autorange doc long_doc order json hidden/;
+    = qw/format short repeatable negativable autosplit autorange doc long_doc order json hidden spacer_before spacer_after/;
 
 sub import {
     my ( undef, @import ) = @_;
@@ -32,14 +34,19 @@ sub import {
         description => undef,
         authors     => [],
         synopsis    => undef,
+        spacer      => " ",
         @import
     };
 
     my $target = caller;
     for my $needed_methods (qw/with around has/) {
         next if $target->can($needed_methods);
-        croak
-            "Can't find the method <$needed_methods> in <$target> ! Ensure to load a Role::Tiny compatible module like Moo or Moose before using MooX::Options.";
+        croak(
+            __x("Can't find the method <{needed_methods}> in <{target}> ! Ensure to load a Role::Tiny compatible module like Moo or Moose before using MooX::Options.",
+                'needed_methods' => $needed_methods,
+                'target'         => $target
+            )
+        );
     }
 
     my $with   = $target->can('with');
@@ -70,7 +77,7 @@ sub import {
         }';
         use warnings FATAL => qw/void/;
 
-        croak $@ if $@;
+        croak($@) if $@;
 
         $around->(
             _options_config => sub {
@@ -83,8 +90,10 @@ sub import {
     }
     else {
         if ( $options_config->{with_config_from_file} ) {
-            croak
-                'Please, don\'t use the option <with_config_from_file> into a role.';
+            croak(
+                __( "Please, don\'t use the option <with_config_from_file> into a role."
+                )
+            );
         }
     }
 
@@ -118,7 +127,7 @@ sub import {
     };
 
     my @banish_keywords
-        = qw/help man usage option new_with_options parse_options options_usage _options_data _options_config/;
+        = qw/h help man usage option new_with_options parse_options options_usage _options_data _options_config/;
     if ( $options_config->{with_config_from_file} ) {
         push @banish_keywords, qw/config_files config_prefix config_dirs/;
     }
@@ -126,9 +135,11 @@ sub import {
     my $option = sub {
         my ( $name, %attributes ) = @_;
         for my $ban (@banish_keywords) {
-            croak
-                "You cannot use an option with the name '$ban', it is implied by MooX::Options"
-                if $name eq $ban;
+            croak(
+                __x("You cannot use an option with the name '{ban}', it is implied by MooX::Options",
+                    ban => $ban
+                )
+            ) if $name eq $ban;
         }
 
         $has->( $name => _filter_attributes(%attributes) );
@@ -165,11 +176,14 @@ sub _validate_and_filter_options {
     $options{autosplit} = ','
         if !defined $options{autosplit} && $options{autorange};
 
-    if ( $options{json} ) {
+    if ( $options{json}
+        || ( defined $options{format} && $options{format} eq 'json' ) )
+    {
         delete $options{repeatable};
         delete $options{autosplit};
         delete $options{autorange};
         delete $options{negativable};
+        $options{json}   = 1;
         $options{format} = 's';
     }
 
@@ -182,11 +196,18 @@ sub _validate_and_filter_options {
         && defined $cmdline_options{format}
         && substr( $cmdline_options{format}, -1 ) ne '@';
 
-    croak
-        "Negativable params is not usable with non boolean value, don't pass format to use it !"
+    croak(
+        __( "Negativable params is not usable with non boolean value, don't pass format to use it !"
+        )
+        )
         if $cmdline_options{negativable} && defined $cmdline_options{format};
 
     return %cmdline_options;
+}
+
+sub croak {
+    require Carp;
+    goto &Carp::croak;
 }
 
 1;
@@ -201,7 +222,7 @@ MooX::Options - Explicit Options eXtension for Object Class
 
 =head1 VERSION
 
-version 4.018
+version 4.019
 
 =head1 DESCRIPTION
 
@@ -219,7 +240,7 @@ In myOptions.pm :
   package myOptions;
   use Moo;
   use MooX::Options;
-  
+
   option 'show_this_file' => (
       is => 'ro',
       format => 's',
@@ -233,9 +254,9 @@ In myTool.pl :
   use feature 'say';
   use myOptions;
   use Path::Class;
-  
+
   my $opt = myOptions->new_with_options;
-  
+
   say "Content of the file : ",
        file($opt->show_this_file)->slurp;
 
@@ -248,13 +269,13 @@ The help message :
 
   perl myTool.pl --help
   USAGE: myTool.pl [-h] [long options...]
-  
+
       --show_this_file: String
           the file to display
-      
+
       -h --help:
           show this help message
-      
+
       --man:
           show the manual
 
@@ -389,6 +410,18 @@ are expected to follow the program's options, and is entirely free-form.
 Literal "%" characters will need to be written as "%%", just like with
 "sprintf".
 
+=head2 spacer
+
+This indicate the char to use for spacer. Please only use 1 char otherwize the text will be too long.
+
+The default char is " ".
+
+  use MooX::Options space => '+'
+
+Then the "spacer_before" and "spacer_after" will use it for "man" and "help" message.
+
+  option 'x' => (is => 'ro', spacer_before => 1, spacer_after => 1);
+
 =head1 OPTION PARAMETERS
 
 The keyword C<option> extend the keyword C<has> with specific parameters for the command line.
@@ -438,6 +471,10 @@ If you use L<Moose> and your attribute has C<< isa => 'Array[Int]' >>, that will
 The parameter will be treated like a json string.
 
   option 'hash' => (is => 'ro', json => 1);
+
+You can also use the json format
+
+  option 'hash' => (is => 'ro', format => "json");
 
   myTool --hash='{"a":1,"b":2}' # hash = { a => 1, b => 2 }
 
@@ -539,6 +576,12 @@ Or
 
   option 'debug' => (is => 'ro', hidden => 1);
 
+=head2 spacer_before, spacer_after
+
+Add spacer before or after or both the params
+
+  option 'myoption' => (is => 'ro', spacer_before => 1, spacer_after => 1);
+
 =head1 ADDITIONAL MANUALS
 
 =over
@@ -559,17 +602,61 @@ Or
 
 =back
 
+=head1 Translation
+
+Translation is now supported.
+
+Use the dzil command to update the pot and merge into the po files.
+
+=over
+
+=item * dzil msg-init
+
+Create a new language po
+
+=item * dzil msg-scan
+
+Scan and generate or update the pot file
+
+=item * dzil msg-merge
+
+Update all languages using the pot file
+
+=back
+
+=head2 THANKS
+
+=over
+
+=item * sschober
+
+For implementation and German translation.
+
+=back
+
 =head1 THANKS
 
 =over
 
-=item Matt S. Trout (mst) <mst@shadowcat.co.uk> : For his patience and advice.
+=item * Matt S. Trout (mst) <mst@shadowcat.co.uk>
 
-=item Tomas Doran (t0m) <bobtfish@bobtfish.net> : To help me release the new version, and using it :)
+For his patience and advice.
 
-=item Torsten Raudssus (Getty) : to use it a lot in L<DuckDuckGo|http://duckduckgo.com> (go to see L<MooX> module also)
+=item * Tomas Doran (t0m) <bobtfish@bobtfish.net>
 
-=item Jens Rehsack (REHSACK) : Use with L<PkgSrc|http://www.pkgsrc.org/>, and many really good idea (L<MooX::Cmd>, L<MooX::ConfigFromFile>, and more to come I'm sure)
+To help me release the new version, and using it :)
+
+=item * Torsten Raudssus (Getty)
+
+to use it a lot in L<DuckDuckGo|http://duckduckgo.com> (go to see L<MooX> module also)
+
+=item * Jens Rehsack (REHSACK)
+
+Use with L<PkgSrc|http://www.pkgsrc.org/>, and many really good idea (L<MooX::Cmd>, L<MooX::ConfigFromFile>, and more to come I'm sure)
+
+=item * All contributors
+
+For improving and add more feature to MooX::Options
 
 =back
 

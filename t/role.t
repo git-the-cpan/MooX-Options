@@ -69,8 +69,11 @@ local $ENV{TEST_FORCE_COLUMN_SIZE} = 78;
     trap {
         $opt->options_usage;
     };
-    ok( $trap->stdout =~ /\-\-multi:\n\s+multi\sthreading\smode/x,
-        "usage method is properly set" );
+    like(
+        $trap->stdout,
+        qr/\-\-multi\s+multi\sthreading\smode/x,
+        "usage method is properly set"
+    );
 }
 {
     local @ARGV;
@@ -86,8 +89,11 @@ local $ENV{TEST_FORCE_COLUMN_SIZE} = 78;
     trap {
         $opt->options_usage;
     };
-    ok( $trap->stdout =~ /\-\-multi:\n\s+multi\sthreading\smode/x,
-        "usage method is properly set" );
+    like(
+        $trap->stdout,
+        qr/\-\-multi\s+multi\sthreading\smode/x,
+        "usage method is properly set"
+    );
 }
 {
     local @ARGV;

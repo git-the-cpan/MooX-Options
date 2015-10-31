@@ -12,17 +12,11 @@ package MooX::Options::Role;
 use strict;
 use warnings;
 
-our $VERSION = '4.018';    # VERSION
+our $VERSION = '4.019';    # VERSION
 
-use MRO::Compat;
 use MooX::Options::Descriptive;
-use Regexp::Common;
-use Data::Record;
-use JSON;
-use Carp;
-use Pod::Usage qw/pod2usage/;
-use Path::Class 0.32;
 use Scalar::Util qw/blessed/;
+use Locale::TextDomain 'MooX-Options';
 
 ### PRIVATE
 
@@ -42,6 +36,7 @@ sub _options_prepare_descriptive {
     my %all_options;
     my %has_to_split;
 
+    my $data_record_loaded = 0;
     for my $name (
         sort {
             $options_data->{$a}{order}
@@ -56,7 +51,9 @@ sub _options_prepare_descriptive {
         my $option = {};
         $option->{hidden} = 1 if $data{hidden};
 
+        push @options, [] if $data{spacer_before};
         push @options, [ _option_name( $name, %data ), $doc, $option ];
+        push @options, [] if $data{spacer_after};
 
         push @{ $all_options{$name} }, $name;
         for ( my $i = 1; $i <= length($name); $i++ ) {
@@ -66,8 +63,17 @@ sub _options_prepare_descriptive {
         }
 
         if ( defined $data{autosplit} ) {
+            if ( !$data_record_loaded ) {
+                require Data::Record;
+                require Regexp::Common;
+                Regexp::Common->import;
+                $data_record_loaded = 1;
+            }
             $has_to_split{$name} = Data::Record->new(
-                { split => $data{autosplit}, unless => $RE{quoted} } );
+                {   split  => $data{autosplit},
+                    unless => $Regexp::Common::RE{quoted}
+                }
+            );
             if ( my $short = $data{short} ) {
                 $has_to_split{$short} = $has_to_split{ ${name} };
             }
@@ -161,16 +167,17 @@ sub _options_fix_argv {
         }
         else {
             push @new_argv, $arg_name;
-        }
 
-        # if option has an argument, we keep the argument untouched
-        if ( defined $original_long_option
-            && ( my $opt_data = $option_data->{$original_long_option} ) )
-        {
-            if ( $opt_data->{format} ) {
-                push @new_argv, shift @ARGV;
+            # if option has an argument, we keep the argument untouched
+            if ( defined $original_long_option
+                && ( my $opt_data = $option_data->{$original_long_option} ) )
+            {
+                if ( $opt_data->{format} ) {
+                    push @new_argv, shift @ARGV;
+                }
             }
         }
+
     }
 
     return @new_argv;
@@ -232,8 +239,11 @@ sub new_with_options {
 
     my %cmdline_params = $class->parse_options(%params);
 
+    if ( $cmdline_params{h} ) {
+        return $class->options_usage( $params{h}, $cmdline_params{h} );
+    }
     if ( $cmdline_params{help} ) {
-        return $class->options_usage( $params{help}, $cmdline_params{help} );
+        return $class->options_help( $params{help}, $cmdline_params{help} );
     }
     if ( $cmdline_params{man} ) {
         return $class->options_man( $cmdline_params{man} );
@@ -264,8 +274,8 @@ sub new_with_options {
     else {
         print STDERR $@;
     }
-    %cmdline_params = $class->parse_options( help => 1 );
-    return $class->options_usage( 1, $cmdline_params{help} );
+    %cmdline_params = $class->parse_options( h => 1 );
+    return $class->options_usage( 1, $cmdline_params{h} );
 }
 
 sub parse_options {
@@ -291,14 +301,18 @@ sub parse_options {
     my $prog_name = $class->_options_prog_name();
 
     # create usage str
-    my $usage_str = $options_config{usage_string} // "USAGE: $prog_name %o";
+    my $usage_str = $options_config{usage_string};
+    $usage_str = __x( "USAGE: {prog_name} %o", prog_name => $prog_name )
+        if !defined $usage_str;
 
     my ( $opt, $usage ) = describe_options(
         ($usage_str),
         @$options,
-        [ 'usage',  'show a short help message' ],
-        [ 'help|h', "show a help message" ],
-        [ 'man',    "show the manual" ],
+        [],
+        [ 'usage', __ "show a short help message" ],
+        [ 'h',     __ "show a compact help message" ],
+        [ 'help',  __ "show a long help message" ],
+        [ 'man',   __ "show the manual" ],
         ,
         @flavour
     );
@@ -319,7 +333,12 @@ sub parse_options {
             my $val = $opt->$name();
             if ( defined $val ) {
                 if ( $data{json} ) {
-                    if (!eval { $cmdline_params{$name} = decode_json($val); 1 }
+                    require JSON::MaybeXS;
+                    if (!eval {
+                            $cmdline_params{$name}
+                                = JSON::MaybeXS::decode_json($val);
+                            1;
+                        }
                         )
                     {
                         print STDERR $@;
@@ -331,6 +350,10 @@ sub parse_options {
                 }
             }
         }
+    }
+
+    if ( $opt->h() || defined $params{h} ) {
+        $cmdline_params{h} = $usage;
     }
 
     if ( $opt->help() || defined $params{help} ) {
@@ -376,6 +399,26 @@ sub options_usage {
     return;
 }
 
+sub options_help {
+    my ( $class, $code, $usage ) = @_;
+    $code = 0 if !defined $code;
+
+    if ( !defined $usage || !ref $usage ) {
+        local @ARGV = ();
+        my %cmdline_params = $class->parse_options( help => $code );
+        $usage = $cmdline_params{help};
+    }
+    my $message = $usage->option_help . "\n";
+    if ( $code > 0 ) {
+        CORE::warn $message;
+    }
+    else {
+        print $message;
+    }
+    exit($code) if $code >= 0;
+    return;
+}
+
 sub options_short_usage {
     my ( $class, $code, $usage ) = @_;
     $code = 0 if !defined $code;
@@ -405,10 +448,14 @@ sub options_man {
         $usage = $cmdline_params{man};
     }
 
-    my $man_file = file( Path::Class::tempdir( CLEANUP => 1 ), 'help.pod' );
+    require Path::Class;
+    Path::Class->VERSION(0.32);
+    my $man_file = Path::Class::file( Path::Class::tempdir( CLEANUP => 1 ),
+        'help.pod' );
     $man_file->spew( iomode => '>:encoding(UTF-8)', $usage->option_pod );
 
-    pod2usage(
+    require Pod::Usage;
+    Pod::Usage::pod2usage(
         -verbose => 2,
         -input   => $man_file->stringify,
         -exitval => 'NOEXIT',
@@ -442,7 +489,7 @@ MooX::Options::Role - role that is apply to your object
 
 =head1 VERSION
 
-version 4.018
+version 4.019
 
 =head1 METHODS
 
@@ -463,6 +510,10 @@ It is use by "new_with_options".
 Display help message.
 
 Check full doc L<MooX::Options> for more details.
+
+=head2 options_help
+
+Display long usage message
 
 =head2 options_short_usage
 

@@ -16,6 +16,12 @@ use Carp;
 use FindBin qw/$RealBin/;
 use Try::Tiny;
 
+use POSIX qw(setlocale LC_ALL);
+
+BEGIN {
+    setlocale LC_ALL, 'C';
+}
+
 {
 
     package t;
@@ -146,6 +152,16 @@ use Try::Tiny;
     use MooX::Options;
 
     option 't' => ( is => 'ro', json => 1 );
+    1;
+}
+
+{
+
+    package t_json_opt;
+    use Moo;
+    use MooX::Options;
+
+    option 't' => ( is => 'ro', format => 'json' );
     1;
 }
 

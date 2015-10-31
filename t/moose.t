@@ -16,7 +16,10 @@ use Carp;
 use FindBin qw/$RealBin/;
 use Try::Tiny;
 
+use POSIX qw(setlocale LC_ALL);
+
 BEGIN {
+    setlocale LC_ALL, 'C';
     eval 'use Moose';
     if ($@) {
         plan skip_all => 'Need Moose for this test';
@@ -155,6 +158,16 @@ BEGIN {
     use MooX::Options;
 
     option 't' => ( is => 'ro', json => 1 );
+    1;
+}
+
+{
+
+    package t_json_opt;
+    use Moose;
+    use MooX::Options;
+
+    option 't' => ( is => 'ro', format => 'json' );
     1;
 }
 

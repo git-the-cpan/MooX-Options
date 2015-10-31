@@ -12,42 +12,38 @@ package MooX::Options::Descriptive::Usage;
 
 use strict;
 use warnings;
-our $VERSION = '4.018';    # VERSION
+
+our $VERSION = '4.019';    # VERSION
 use feature 'say', 'state';
-use Text::LineFold;
 use Getopt::Long::Descriptive;
 use Scalar::Util qw/blessed/;
-
-BEGIN {
-    ## no critic (ProhibitStringyEval)
-    if ( !eval "use Term::Size::Any qw/chars/; 1" ) {
-        no strict 'refs';
-        *{"MooX::Options::Descriptive::Usage::chars"}
-            = sub { return ( 80, 25 ) };
-    }
-}
+use Locale::TextDomain 'MooX-Options';
 
 my %format_doc = (
-    's'  => 'String',
-    's@' => '[Strings]',
-    'i'  => 'Int',
-    'i@' => '[Ints]',
-    'o'  => 'Ext. Int',
-    'o@' => '[Ext. Ints]',
-    'f'  => 'Real',
-    'f@' => '[Reals]',
+    's'  => __("String"),
+    's@' => __("[Strings]"),
+    'i'  => __("Int"),
+    'i@' => __("[Ints]"),
+    'o'  => __("Ext. Int"),
+    'o@' => __("[Ext. Ints]"),
+    'f'  => __("Real"),
+    'f@' => __("[Reals]"),
 );
 
-my %format_long_doc = (
-    's'  => 'String',
-    's@' => 'Array of Strings',
-    'i'  => 'Integer',
-    'i@' => 'Array of Integers',
-    'o'  => 'Extended Integer',
-    'o@' => 'Array of extended integers',
-    'f'  => 'Real number',
-    'f@' => 'Array of real numbers',
-);
+sub _format_long_doc {
+    my $format          = shift;
+    my %format_long_doc = (
+        's'  => __("String"),
+        's@' => __("Array of Strings"),
+        'i'  => __("Integer"),
+        'i@' => __("Array of Integers"),
+        'o'  => __("Extended Integer"),
+        'o@' => __("Array of extended integers"),
+        'f'  => __("Real number"),
+        'f@' => __("Array of real numbers"),
+    );
+    return $format_long_doc{$format};
+}
 
 sub new {
     my ( $class, $args ) = @_;
@@ -62,38 +58,114 @@ sub leader_text { return shift->{leader_text} }
 
 sub sub_commands_text {
     my ($self) = @_;
-    my $sub_commands
-        = defined $self->{target}
-        ? $self->{target}->_options_sub_commands() // []
-        : [];
+    my $sub_commands = [];
+    if (defined $self->{target}
+        && defined(
+            my $sub_commands_options = $self->{target}->_options_sub_commands
+        )
+        )
+    {
+        $sub_commands = $sub_commands_options;
+    }
     return if !@$sub_commands;
-    return "", 'SUB COMMANDS AVAILABLE: ' . join( ', ', @$sub_commands ), "";
+    return "", __("SUB COMMANDS AVAILABLE: ") . join( ', ', @$sub_commands ),
+        "";
 }
 
 sub text {
     my ($self) = @_;
+    my %options_data
+        = defined $self->{target} ? $self->{target}->_options_data : ();
+    my %options_config
+        = defined $self->{target}
+        ? $self->{target}->_options_config
+        : ( spacer => " " );
+    my $getopt_options = $self->{options};
+
+    my $lf = _get_line_fold();
+
+    my @to_fold;
+    my $max_spec_length = 0;
+    for my $opt (@$getopt_options) {
+        if ( $opt->{desc} eq 'spacer' ) {
+            push @to_fold, '';
+            push @to_fold,
+                $options_config{spacer} x ( $lf->config('ColMax') - 4 );
+            next;
+        }
+        my ( $short, $format ) = $opt->{spec} =~ /(?:\|(\w))?(?:=(.*?))?$/x;
+        my $format_doc_str;
+        $format_doc_str = $format_doc{$format} if defined $format;
+        $format_doc_str = 'JSON'
+            if defined $options_data{ $opt->{name} }{json};
+
+        my $spec
+            = ( defined $short ? "-" . $short . " " : "" ) . "-"
+            . ( length( $opt->{name} ) > 1 ? "-" : "" )
+            . $opt->{name}
+            . ( defined $format_doc_str ? "=" . $format_doc_str : "" );
+
+        $max_spec_length = length($spec) if $max_spec_length < length($spec);
+
+        push @to_fold, $spec, $opt->{desc};
+    }
+
+    my @message;
+    while (@to_fold) {
+        my $spec = shift @to_fold;
+        my $desc = shift @to_fold;
+        if ( length($spec) ) {
+            push @message,
+                $lf->fold(
+                "    ",
+                " " x ( 6 + $max_spec_length ),
+                sprintf(
+                    "%-" . ( $max_spec_length + 1 ) . "s %s",
+                    $spec, $desc
+                )
+                );
+        }
+        else {
+            push @message, $desc, "\n";
+        }
+    }
 
     return join( "\n",
-        $self->leader_text, $self->option_text, $self->sub_commands_text );
+        $self->leader_text, "", join( "", @message ),
+        $self->sub_commands_text );
 }
 
 # set the column size of your terminal into the wrapper
 sub _get_line_fold {
-    my ($columns) = chars();
-    $columns //= 78;
-    $columns = $ENV{TEST_FORCE_COLUMN_SIZE}
-        if defined $ENV{TEST_FORCE_COLUMN_SIZE};
+    my $columns = $ENV{TEST_FORCE_COLUMN_SIZE}
+        || eval {
+        require Term::Size::Any;
+        [ Term::Size::Any::chars() ]->[0];
+        } || 80;
+
+    require Text::LineFold;
     return Text::LineFold->new( ColMax => $columns - 4 );
 }
 
-sub option_text {
+sub option_help {
     my ($self) = @_;
     my %options_data
         = defined $self->{target} ? $self->{target}->_options_data : ();
+    my %options_config
+        = defined $self->{target}
+        ? $self->{target}->_options_config
+        : ( spacer => " " );
     my $getopt_options = $self->{options};
     my @message;
     my $lf = _get_line_fold();
     for my $opt (@$getopt_options) {
+        if ( $opt->{desc} eq 'spacer' ) {
+            push @message,
+                $options_config{spacer} x ( $lf->config('ColMax') - 4 );
+            push @message, "";
+            push @message, "";
+            next;
+        }
         my ( $short, $format ) = $opt->{spec} =~ /(?:\|(\w))?(?:=(.*?))?$/x;
         my $format_doc_str;
         $format_doc_str = $format_doc{$format} if defined $format;
@@ -104,11 +176,23 @@ sub option_text {
             . ( length( $opt->{name} ) > 1 ? "-" : "" )
             . $opt->{name} . ":"
             . ( defined $format_doc_str ? " " . $format_doc_str : "" );
-        push @message, $lf->fold( "    ", "        ", $opt->{desc} );
+
+        my $opt_data = $options_data{ $opt->{name} };
+        $opt_data = {} if !defined $opt_data;
+        push @message,
+            $lf->fold(
+            "    ",
+            "        ",
+            defined $opt_data->{long_doc}
+            ? $opt_data->{long_doc}
+            : $opt->{desc}
+            );
         push @message, "";
     }
 
-    return join( "\n    ", "", @message );
+    return join( "\n",
+        $self->leader_text, join( "\n    ", "", @message ),
+        $self->sub_commands_text );
 }
 
 sub option_pod {
@@ -117,15 +201,23 @@ sub option_pod {
     my %options_data
         = defined $self->{target} ? $self->{target}->_options_data : ();
     my %options_config
-        = defined $self->{target} ? $self->{target}->_options_config : ();
-
-    my $prog_name = $self->{prog_name}
-        // Getopt::Long::Descriptive::prog_name;
-
-    my $sub_commands
         = defined $self->{target}
-        ? $self->{target}->_options_sub_commands() // []
-        : [];
+        ? $self->{target}->_options_config
+        : ( spacer => " " );
+
+    my $prog_name = $self->{prog_name};
+    $prog_name = Getopt::Long::Descriptive::prog_name if !defined $prog_name;
+
+    my $sub_commands = [];
+    if (defined $self->{target}
+        && defined(
+            my $sub_commands_options
+                = $self->{target}->_options_sub_commands()
+        )
+        )
+    {
+        $sub_commands = $sub_commands_options;
+    }
 
     my @man = ( "=encoding UTF-8", "=head1 NAME", $prog_name, );
 
@@ -134,7 +226,10 @@ sub option_pod {
     }
 
     push @man,
-        ( "=head1 SYNOPSIS", $prog_name . " [-h] [long options ...]", );
+        (
+        "=head1 SYNOPSIS",
+        $prog_name . " [-h] [" . __("long options ...") . "]"
+        );
 
     if ( defined( my $synopsis = $options_config{synopsis} ) ) {
         push @man, $synopsis;
@@ -142,11 +237,17 @@ sub option_pod {
 
     push @man, ( "=head1 OPTIONS", "=over" );
 
+    my $spacer_escape = "E<" . ord( $options_config{spacer} ) . ">";
     for my $opt ( @{ $self->{options} } ) {
-
+        if ( $opt->{desc} eq 'spacer' ) {
+            push @man, "=back";
+            push @man, $spacer_escape x 40;
+            push @man, "=over";
+            next;
+        }
         my ( $short, $format ) = $opt->{spec} =~ /(?:\|(\w))?(?:=(.*?))?$/x;
         my $format_doc_str;
-        $format_doc_str = $format_long_doc{$format} if defined $format;
+        $format_doc_str = _format_long_doc($format) if defined $format;
         $format_doc_str = 'JSON'
             if defined $options_data{ $opt->{name} }{json};
 
@@ -159,9 +260,12 @@ sub option_pod {
 
         push @man, "=item B<" . $opt_name . ">";
 
-        my $opt_data = $options_data{ $opt->{name} } // {};
-        push @man, $opt_data->{long_doc} // $opt->{desc};
-
+        my $opt_data = $options_data{ $opt->{name} };
+        $opt_data = {} if !defined $opt_data;
+        push @man,
+            defined $opt_data->{long_doc}
+            ? $opt_data->{long_doc}
+            : $opt->{desc};
     }
     push @man, "=back";
 
@@ -172,7 +276,10 @@ sub option_pod {
             push @man,
                 (
                 "=item B<" . $sub_command . "> :",
-                $prog_name . " " . $sub_command . " [-h] [long options ...]",
+                $prog_name . " "
+                    . $sub_command
+                    . " [-h] ["
+                    . __("long options ...") . "]"
                 );
         }
         push @man, "=back";
@@ -198,11 +305,15 @@ sub option_short_usage {
         = defined $self->{target} ? $self->{target}->_options_data : ();
     my $getopt_options = $self->{options};
 
-    my $prog_name = $self->{prog_name}
-        // Getopt::Long::Descriptive::prog_name;
+    my $prog_name = $self->{prog_name};
+    $prog_name = Getopt::Long::Descriptive::prog_name if !defined $prog_name;
 
     my @message;
     for my $opt (@$getopt_options) {
+        if ( $opt->{desc} eq 'spacer' ) {
+            push @message, '';
+            next;
+        }
         my ($format) = $opt->{spec} =~ /(?:\|\w)?(?:=(.*?))?$/x;
         my $format_doc_str;
         $format_doc_str = $format_doc{$format} if defined $format;
@@ -214,7 +325,8 @@ sub option_short_usage {
             . $opt->{name}
             . ( defined $format_doc_str ? "=" . $format_doc_str : "" );
     }
-    return join( " ", $prog_name, map {"[ $_ ]"} @message );
+    return
+        join( " ", $prog_name, map { $_ eq '' ? " | " : "[ $_ ]" } @message );
 }
 
 sub warn { return CORE::warn shift->text }
@@ -228,7 +340,6 @@ sub die {
 use overload (
     q{""} => "text",
     '&{}' => sub {
-        my ($self) = @_;
         return
             sub { my ($self) = @_; return $self ? $self->text : $self->warn; };
     }
@@ -246,7 +357,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.018
+version 4.019
 
 =head1 DESCRIPTION
 
@@ -255,10 +366,6 @@ Usage class to display the error message.
 This class use the full size of your terminal
 
 =head1 METHODS
-
-=head2 chars
-
-Return (Columns, Rows) of the current terminal
 
 =head2 new
 
@@ -288,7 +395,7 @@ Return the list of sub commands if available.
 
 =head2 text
 
-Return the full text help, leader and option text.
+Return a compact help message.
 
 =head2 option_text
 
