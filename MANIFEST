@@ -25,6 +25,7 @@ share/LocaleData/de/LC_MESSAGES/MooX-Options.mo
 share/LocaleData/de_DE/LC_MESSAGES/MooX-Options.mo
 t/00-compile.t
 t/000-report-versions.t
+t/Test.pm
 t/around_options_usage.t
 t/author-critic.t
 t/author-pod-coverage.t

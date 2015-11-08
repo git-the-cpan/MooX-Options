@@ -13,7 +13,7 @@ package MooX::Options;
 use strict;
 use warnings;
 
-our $VERSION = '4.019';    # VERSION
+our $VERSION = '4.020';    # VERSION
 
 use Locale::TextDomain 'MooX-Options';
 
@@ -222,7 +222,7 @@ MooX::Options - Explicit Options eXtension for Object Class
 
 =head1 VERSION
 
-version 4.019
+version 4.020
 
 =head1 DESCRIPTION
 
@@ -287,6 +287,12 @@ The usage message :
 The manual :
 
   perl myTool.pl --man
+
+=head1 METHODS
+
+=head2 croak
+
+Call Carp::croak dynamically
 
 =head1 IMPORTED METHODS
 

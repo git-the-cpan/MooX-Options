@@ -7,16 +7,8 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
-use strict;
-use warnings;
-use Test::More;
+use t::Test;
 use Carp;
-
-use POSIX qw(setlocale LC_ALL);
-
-BEGIN {
-    setlocale LC_ALL, 'C';
-}
 
 local $ENV{TEST_FORCE_COLUMN_SIZE} = 78;
 

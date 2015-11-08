@@ -10,10 +10,12 @@ package MooX::Options::Descriptive::Usage;
 
 # ABSTRACT: Usage class
 
+## no critic (ProhibitExcessComplexity)
+
 use strict;
 use warnings;
 
-our $VERSION = '4.019';    # VERSION
+our $VERSION = '4.020';    # VERSION
 use feature 'say', 'state';
 use Getopt::Long::Descriptive;
 use Scalar::Util qw/blessed/;
@@ -357,7 +359,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.019
+version 4.020
 
 =head1 DESCRIPTION
 
@@ -397,7 +399,7 @@ Return the list of sub commands if available.
 
 Return a compact help message.
 
-=head2 option_text
+=head2 option_help
 
 Return the help message for your options
 

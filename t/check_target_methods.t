@@ -7,9 +7,7 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
-use strict;
-use warnings;
-use Test::More;
+use t::Test;
 
 {
 
@@ -27,6 +25,7 @@ my $test = t->new_with_options;
 my %ignore_methods;
 @ignore_methods{
     qw/
+        Test::
         AUTOLOAD
         BEGIN
         BUILD

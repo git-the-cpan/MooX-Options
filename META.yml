@@ -9,9 +9,9 @@ build_requires:
   FindBin: '0'
   IO::Handle: '0'
   IPC::Open3: '0'
+  Import::Into: '0'
   Module::Build: '0.4211'
   Moo: '1.003001'
-  POSIX: '0'
   Role::Tiny::With: '0'
   Test::More: '0.94'
   Test::Requires: '0'
@@ -59,7 +59,7 @@ resources:
   bugtracker: https://github.com/celogeek/MooX-Options/issues
   homepage: https://tasks.celogeek.com/projects/perl-modules-moox-options
   repository: https://github.com/celogeek/MooX-Options.git
-version: '4.019'
+version: '4.020'
 x_Dist_Zilla:
   perl:
     version: '5.022000'

@@ -7,9 +7,7 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
-use strict;
-use warnings;
-use Test::More tests => 3;
+use t::Test;
 use Test::Trap;
 
 local $ENV{TEST_FORCE_COLUMN_SIZE} = 78;

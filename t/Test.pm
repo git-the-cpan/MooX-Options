@@ -1,4 +1,3 @@
-#!perl
 #
 # This file is part of MooX-Options
 #
@@ -7,20 +6,18 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
-use t::Test;
+package t::Test;
+use strict;
+use warnings;
+use Test::More;
+use Import::Into;
 
-local $ENV{TEST_FORCE_COLUMN_SIZE} = 78;
-
-{
-
-    package t;
-    use Moo;
-    use MooX::Options;
-
-    1;
+sub import {
+    $ENV{LC_ALL} = 'C';
+    my $target = caller;
+    strict->import::into($target);
+    warnings->import::into($target);
+    Test::More->import::into($target);
 }
 
-my $p = t->new_with_options;
-ok( $p, 't has options' );
-
-done_testing;
+1;
