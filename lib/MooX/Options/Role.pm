@@ -13,7 +13,7 @@ use strict;
 use warnings;
 ## no critic (ProhibitExcessComplexity)
 
-our $VERSION = '4.020';    # VERSION
+our $VERSION = '4.021';    # VERSION
 
 use MooX::Options::Descriptive;
 use Scalar::Util qw/blessed/;
@@ -487,7 +487,7 @@ MooX::Options::Role - role that is apply to your object
 
 =head1 VERSION
 
-version 4.020
+version 4.021
 
 =head1 METHODS
 

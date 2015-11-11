@@ -27,7 +27,7 @@ my %module_build_args = (
     "celogeek <me\@celogeek.com>"
   ],
   "dist_name" => "MooX-Options",
-  "dist_version" => "4.020",
+  "dist_version" => "4.021",
   "license" => "perl",
   "module_name" => "MooX::Options",
   "recommends" => {
@@ -69,6 +69,7 @@ my %module_build_args = (
     "IPC::Open3" => 0,
     "Import::Into" => 0,
     "Moo" => "1.003001",
+    "POSIX" => 0,
     "Role::Tiny::With" => 0,
     "Test::More" => "0.94",
     "Test::Requires" => 0,
@@ -92,6 +93,7 @@ my %fallback_build_requires = (
   "Import::Into" => 0,
   "Module::Build" => "0.4211",
   "Moo" => "1.003001",
+  "POSIX" => 0,
   "Role::Tiny::With" => 0,
   "Test::More" => "0.94",
   "Test::Requires" => 0,

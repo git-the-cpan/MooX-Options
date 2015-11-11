@@ -15,7 +15,7 @@ package MooX::Options::Descriptive::Usage;
 use strict;
 use warnings;
 
-our $VERSION = '4.020';    # VERSION
+our $VERSION = '4.021';    # VERSION
 use feature 'say', 'state';
 use Getopt::Long::Descriptive;
 use Scalar::Util qw/blessed/;
@@ -359,7 +359,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.020
+version 4.021
 
 =head1 DESCRIPTION
 
