@@ -13,7 +13,7 @@ package MooX::Options;
 use strict;
 use warnings;
 
-our $VERSION = '4.021';    # VERSION
+our $VERSION = '4.022';    # VERSION
 
 use Locale::TextDomain 'MooX-Options';
 
@@ -222,7 +222,7 @@ MooX::Options - Explicit Options eXtension for Object Class
 
 =head1 VERSION
 
-version 4.021
+version 4.022
 
 =head1 DESCRIPTION
 

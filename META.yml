@@ -26,7 +26,7 @@ configure_requires:
   Module::Build: '0.4211'
   perl: v5.10.0
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 5.041, CPAN::Meta::Converter version 2.150001'
+generated_by: 'Dist::Zilla version 5.042, CPAN::Meta::Converter version 2.150001'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -60,7 +60,7 @@ resources:
   bugtracker: https://github.com/celogeek/MooX-Options/issues
   homepage: https://tasks.celogeek.com/projects/perl-modules-moox-options
   repository: https://github.com/celogeek/MooX-Options.git
-version: '4.021'
+version: '4.022'
 x_Dist_Zilla:
   perl:
     version: '5.022000'
@@ -77,51 +77,51 @@ x_Dist_Zilla:
           prune_directory: []
           root: .
       name: '@GRS/@Filter/GatherDir'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::PruneCruft
       name: '@GRS/@Filter/PruneCruft'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ManifestSkip
       name: '@GRS/@Filter/ManifestSkip'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::MetaYAML
       name: '@GRS/@Filter/MetaYAML'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::License
       name: '@GRS/@Filter/License'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::Readme
       name: '@GRS/@Filter/Readme'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ExtraTests
       name: '@GRS/@Filter/ExtraTests'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ExecDir
       name: '@GRS/@Filter/ExecDir'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ShareDir
       name: '@GRS/@Filter/ShareDir'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::Manifest
       name: '@GRS/@Filter/Manifest'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::TestRelease
       name: '@GRS/@Filter/TestRelease'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ConfirmRelease
       name: '@GRS/@Filter/ConfirmRelease'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ReportVersions
       name: '@GRS/ReportVersions'
@@ -162,11 +162,11 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::PodCoverageTests
       name: '@GRS/PodCoverageTests'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::PruneFiles
       name: '@GRS/PruneFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::ReadmeMarkdownFromPod
       config:
@@ -177,11 +177,11 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::MetaJSON
       name: '@GRS/MetaJSON'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::MetaConfig
       name: '@GRS/MetaConfig'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::PodWeaver
       config:
@@ -276,11 +276,11 @@ x_Dist_Zilla:
         Dist::Zilla::Role::TestRunner:
           default_jobs: 1
       name: ModuleBuild
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: AutoPrereqs
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::Prereqs
       config:
@@ -288,7 +288,7 @@ x_Dist_Zilla:
           phase: runtime
           type: requires
       name: Prereqs
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::Prereqs
       config:
@@ -296,7 +296,7 @@ x_Dist_Zilla:
           phase: runtime
           type: recommends
       name: RuntimeRecommends
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::MetaResourcesFromGit
       name: MetaResourcesFromGit
@@ -308,45 +308,45 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':InstallModules'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':IncModules'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':TestFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':ExtraTestFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':ExecFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':PerlExecFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':ShareFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':MainModule'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':AllFiles'
-      version: '5.041'
+      version: '5.042'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':NoFiles'
-      version: '5.041'
+      version: '5.042'
   zilla:
     class: Dist::Zilla::Dist::Builder
     config:
       is_trial: '0'
-    version: '5.041'
+    version: '5.042'

@@ -15,7 +15,7 @@ package MooX::Options::Descriptive::Usage;
 use strict;
 use warnings;
 
-our $VERSION = '4.021';    # VERSION
+our $VERSION = '4.022';    # VERSION
 use feature 'say', 'state';
 use Getopt::Long::Descriptive;
 use Scalar::Util qw/blessed/;
@@ -165,7 +165,6 @@ sub option_help {
             push @message,
                 $options_config{spacer} x ( $lf->config('ColMax') - 4 );
             push @message, "";
-            push @message, "";
             next;
         }
         my ( $short, $format ) = $opt->{spec} =~ /(?:\|(\w))?(?:=(.*?))?$/x;
@@ -189,7 +188,6 @@ sub option_help {
             ? $opt_data->{long_doc}
             : $opt->{desc}
             );
-        push @message, "";
     }
 
     return join( "\n",
@@ -359,7 +357,7 @@ MooX::Options::Descriptive::Usage - Usage class
 
 =head1 VERSION
 
-version 4.021
+version 4.022
 
 =head1 DESCRIPTION
 
